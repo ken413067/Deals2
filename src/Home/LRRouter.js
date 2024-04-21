@@ -28,6 +28,8 @@ export const router = createBrowserRouter([
     { path: "register", element: <Register2 /> },
     { path: "aboutme", element: <AbAll /> },
     { path: "aboutmeall", element: <Material /> },
+    // { path: "LoginFromSql", element: <LoginFromSql /> },
+    
 
 
 // 炯

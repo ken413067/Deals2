@@ -12,7 +12,7 @@ export function AboutCollect() {
 
     return (
         <>
-            <Grid item xs={8} md={7} p={4} sx={{ height: 1, overflowY: 'scroll', boxShadow: 5 }}>
+            <Grid item xs={8} md={7} p={4} sx={{ height: 1, overflowY: 'scroll', boxShadow: 5,bgcolor:'white' }}>
                 <Typography variant='h5'>收藏文章<Divider />
                 </Typography>
                 <Grid container sx={{ justifyContent: 'center' }}>

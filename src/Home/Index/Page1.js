@@ -57,8 +57,8 @@ function Page1() {
         {/* 熱門趨勢 */}
         <Grid container sx={{ justifyContent: 'center', mt: 10 }}>
 
-          <Grid item xs={10}>
-            <Typography mx={2} variant='h6' color='#000000'>熱門趨勢
+          <Grid item xs={10} p={2} sx={{bgcolor:'#F8F4F5'}}>
+            <Typography  variant='h6' color='#000000'>熱門趨勢
               <Divider />
             </Typography>
             <Treemap />
@@ -74,7 +74,7 @@ function Page1() {
 
 
           {/* 主題 */}
-          <Grid item sm={3} md={2} sx={{ display: { xs: 'none', sm: 'block' }, mr: 1, height: 'auto', height: '102vh', pt: 1 }}   >
+          <Grid item sm={3} md={2} sx={{ display: { xs: 'none', sm: 'block' }, mr: 1, height: 'auto', height: '80vh', pt: 1 ,bgcolor:'#F8F4F5'}}   >
             <Typography variant='h6' p={2} color='#000000' >
               主題<Divider />
             </Typography>
@@ -83,16 +83,16 @@ function Page1() {
 
 
           {/* 最新文章 */}
-          <Grid item xs={11} sm={8} >
+          <Grid item xs={11} sm={8} sx={{bgcolor:'#F8F4F5'}}>
 
-            <Grid container sx={{ justifyContent: 'center' }}>
+            <Grid container sx={{ justifyContent: 'center',boxShadow: 1,}}>
               <Tabs value={selectedTab} onChange={handleTabChange} centered>
                 <Tab value="hot" label="熱門文章"></Tab>
                 <Tab value="latest" label="最新文章"></Tab>
               </Tabs>
             </Grid>
 
-            <Grid container mt={1} sx={{ boxShadow: 1, justifyContent: 'center' }}>
+            <Grid container mt={1} sx={{ boxShadow: 1, justifyContent: 'center',bgcolor:'rgba(4, 13, 18,0.8)' }}>
               <New2 />
             </Grid>
 

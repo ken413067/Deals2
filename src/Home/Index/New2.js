@@ -1,17 +1,24 @@
 import { React, useState, useContext, useEffect } from 'react'
+import Cookies from 'js-cookie';
 // 頁面串接
 import Newspage from './Newspage'
 import { themeforbutton } from './Appbar';
 import { TakePostcontext, TakePostProvider } from './AllApi/IndexAPI'
 // mui
-import { IconButton, Stack, Grid, Typography, ThemeProvider, CardContent, Badge, Button, Modal, CardActions, CardMedia, Card, Box } from '@mui/material'
+import { IconButton, Stack, Grid, Typography, ThemeProvider, CardContent, Badge, Button, Modal, CardActions, CardMedia, Card, Box, Avatar } from '@mui/material'
 // 圖片(icon)
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import SendSharpIcon from '@mui/icons-material/SendSharp';
 import BookmarkOutlinedIcon from '@mui/icons-material/BookmarkOutlined';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+
+
 // 後面加的
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import { CategoryContext } from './CategoryContext';
+import { AboutmeContext } from '../AboutMe/AbRouter'
+import axios from 'axios';
+
 
 
 
@@ -36,6 +43,7 @@ function New2() {
         fetchPostBook,// 關於搜索以及排序，判斷是否按讚
         toggleLove,//點讚的登入才能使用此功能
         toggleHate,//倒讚的登入才能使用此功能
+        openHint, handletext3//提示框
 
     } = useContext(CategoryContext);
     const search = searchref
@@ -47,27 +55,66 @@ function New2() {
         checkcollectdata, setcheckcollectdata,  // 檢查用戶是否有對文章按過收藏
     } = useContext(TakePostcontext)
 
+    // const { abmedata } = useContext(AboutmeContext)
+    // const myuid = abmedata ? abmedata[3][0].UID : ''
+    // console.log(myuid)
+    //uid相等才會顯示刪除
+    // const [checkmyuid, setcheckmyuid] = useState('')
+    const deletepost = (wid) => {
+        const url = `http://localhost/Prologin2/public/api/delete/${wid}`;
+        axios.get(url, {
+            params: {
+                token: token
+            }
+        })
+            .then((response) => {
+                openHint()
+                handletext3('刪除成功')
+            })
+            .catch((error) => {
+                openHint()
+                handletext3('刪除失敗 不是你的文章')
+            });
+    };
 
     // 1.點擊後將執行送出收藏的函數handleWidUpdate，接者自動執行collectforpost獲取收藏，會回傳一個陣列collect
     //2.將collect進行map，在滑鼠點擊按鈕時透過a函數傳送這篇文章的book.wid
     //3.將文章id與數組進行對比
     //4.將產生的值拿給收藏按鈕
+    // console.log(collect)
+    // const [lastcollect, setlastcollect] = useState(false)
+    // const checkcollect = (wid) => {
 
-    const checkcollect = (wid) => {
-        // 确保collect存在，然后在其中查找匹配的TargetWID
-        // console.log(collect)
-        // const found =collect.find(prop => prop.TargetWID ) ;
-        // setcheckcollectdata(found); // 如果找到，则found为匹配对象，否则为null
-        // setpagedata(wid)//傳入這篇文章的wid
-        // console.log(collect)
+    //     // 确保collect存在，然后在其中查找匹配的TargetWID
+    //     // console.log(collect)
+    //     const found = collect ? collect.find(prop => prop.TargetWID === wid) : 'undefined';
+    //     if (found !== undefined) {
+    //         setlastcollect(true)
+    //     } else {
+    //         setlastcollect(false);
+    //     }
 
-    }
+    // const lastcollect1 = result ? true:false
+    // setcheckcollectdata(found); // 如果找到，则found为匹配对象，否则为null
+    // setpagedata(wid)//傳入這篇文章的wid
+    // console.log(collect)
+
+    // }
+
+
+    // useEffect(() => {
+    //     checkcollect()
+    //     collectforpost();
+    // }, []);
+
+
+    //token刪除文章用的
+    const token = Cookies.get('token')
 
     // 網頁剛載入會執行的部分
     useEffect(() => {
         checkLoginStatus();
         fetchPostBook();
-        checkcollect()
     }, [isUserLoggedIn, selectedTab, category, search]);
 
 
@@ -95,7 +142,11 @@ function New2() {
 
             {postbook.slice(0, postQuantity).map((bookdata, index) => (<div key={index}>
                 <Grid item key={bookdata.WID}>
-                    <Card sx={{ width: 250, height: 480, m: 3 }} key={bookdata.WID}>
+                    <Card sx={{
+                        width: 250, height: 460, m: 3, bgcolor: '#F8F4F5', boxShadow: 5, position: 'relative'
+                        , transition: 'transform 0.3s ease',  // 動畫
+                        '&:hover': { transform: 'translateY(-20px)' }// 向上移動
+                    }} key={bookdata.WID}>
                         {/* 圖 */}
                         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                             <Button sx={{ height: 1 }} onClick={() => {
@@ -103,11 +154,14 @@ function New2() {
                             }}>
                                 <CardMedia
                                     component="img"
-                                    sx={{ objectFit: 'contain', width: 200, height: 200 }}
-                                    image={bookdata.ItemIMG ? `data:image/jpeg;base64,${bookdata.ItemIMG}` : '../dd.jpg'}
+                                    sx={{ objectFit: 'contain', maxWidth: 250, maxHeight: 160 }}
+                                    image={bookdata.ItemIMG ? `data:image/jpeg;base64,${bookdata.ItemIMG}` : '../NOIMG.jpg'}
                                 />
                             </Button>
                         </Box>
+                        {/* 折扣 */}
+                        <Button disabled sx={{ position: 'absolute', top: 0, left: 0, bgcolor: '#d32f2f' }}><Typography sx={{ color: 'white' }}>{bookdata.InProgress ? bookdata.InProgress : 0}%OFF</Typography></Button>
+                        {token ? <IconButton onClick={() => { deletepost(bookdata.WID) }} sx={{ position: 'absolute', top: 0, right: 0, }}><CloseOutlinedIcon /></IconButton> : ''}
                         {/* 內容 */}
                         <CardContent sx={{ height: 150 }}>
                             <Stack direction='row' spacing={2} >
@@ -123,14 +177,9 @@ function New2() {
                             </Typography>
                         </CardContent>
                         {/* 按鈕 */}
-                        <CardActions sx={{}}>
+                        <CardActions sx={{ justifyContent: 'center' }}>
                             <Stack direction='row' spacing={1} >
-                                {/* 折扣 */}
-                                <IconButton disabled >
-                                    <Badge badgeContent={''} color="error" sx={{ position: 'absolute', right: -1, top: 6 }}>
-                                    </Badge>
-                                    <Typography sx={{ color: '#f44336' }}>折扣狀態</Typography>
-                                </IconButton>
+
                                 {/* 愛心 */}
                                 <IconButton onClick={() => toggleLove(bookdata.WID)} >
                                     <Badge badgeContent={likeCounts[bookdata.WID]} color="error" showZero={true}>
@@ -144,21 +193,25 @@ function New2() {
                                     </Badge>
                                 </IconButton>
                                 {/* 收藏 */}
-                                <IconButton onClick={() => { handleWidUpdate(bookdata.WID); checkcollect(bookdata.WID) }} >
-                                    <BookmarkOutlinedIcon sx={{ ':hover': { color: '#ffc107' }, color: bookdata.WID === checkcollectdata ? '#ffc107' : '#616161' }} />
-                                </IconButton>
-                                {/* {console.log(bookdata.WID === checkcollectdata)} */}
-                                
-                                {/* 分享 */}
-                                {/* <IconButton>
-                                    <SendSharpIcon sx={{ ':hover': { color: '#0277bd' } }} />
+                                {/* <IconButton onClick={() => { handleWidUpdate(bookdata.WID); checkcollect(bookdata.WID) }} >
+                                    <BookmarkOutlinedIcon sx={{ ':hover': { color: '#ffc107' }, color: lastcollect ? '#ffc107' : '#616161' }} />
                                 </IconButton> */}
+
+                                {/* 分享 */}
+                                <IconButton>
+                                    <SendSharpIcon sx={{ ':hover': { color: '#0277bd' } }} />
+                                </IconButton>
                             </Stack>
 
                         </CardActions>
-                        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
-                            發文日期 : {formatDate(bookdata.PostTime)}
-                        </Typography>
+                        <Stack direction='row' px={1} spacing={1} sx={{ alignItems: 'center', justifyContent: 'center' }}>
+                            <Avatar src={bookdata.image ? `data:image/jpeg;base64,${bookdata.image}` : '../ken1.jpg'} sx={{ border: 1 }} />
+
+                            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
+                                發文日期 : {formatDate(bookdata.PostTime)}
+                            </Typography>
+                        </Stack>
+
                     </Card>
                 </Grid>
             </div>

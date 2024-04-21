@@ -39,6 +39,9 @@ export function CategoryProvider({ children }) {
     const handletext1 = () => {
         settextdata('發表成功')
     }
+    const handletext3 = (prop) => {
+        settextdata(prop)
+    }
 
 
     // 判斷現在的資料是哪一頁要的
@@ -94,20 +97,20 @@ export function CategoryProvider({ children }) {
 
     // new2拿到的全部排序資料
     const [postbook, setPostBook] = useState([]);
-    // 存token的狀態及函數
-    const [posttoken, setposttoken] = useState('')
     // 判斷是誰在呼叫
-    const [whocall, setwhocall] = useState('')
-    const taketoken = () => {
-        setposttoken(Cookies.get('token'))
-        setwhocall()
+    const [whocall, setwhocall] = useState(1)
+
+    const dataforabme = (prop) => {
+        setwhocall(prop)
+        // console.log(whocall)
     }
+
     const dontTaketoken = () => {
-        setposttoken('')
-        setwhocall('')
+        setwhocall(0)
     }
     // 關於搜索以及排序，判斷是否按讚
     const fetchPostBook = () => {
+        const token = Cookies.get('token')
         let url = `http://localhost/Prologin2/public/api/rank`;
         let params = new URLSearchParams();
         if (category !== '') {
@@ -115,6 +118,9 @@ export function CategoryProvider({ children }) {
         }
         if (search !== '') {
             params.append('search', search);
+        }
+        if (whocall === 1) {
+            params.append('token', token);
         }
 
         axios.get(url, {
@@ -152,14 +158,13 @@ export function CategoryProvider({ children }) {
     };
 
 
-
     // 檢查用戶是否有對文章按過讚
     const checkUserLikes = (dataArray) => {
         const token = Cookies.get('token');
         // if (token) {
         fetch('http://localhost/Prologin2/public/api/like'
             , {
-                method: 'POST',
+                method: 'post',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -278,14 +283,7 @@ export function CategoryProvider({ children }) {
         }));
         updateLikeDislike(wid, 'dislike');
     };
-    // 收藏按鈕
-    // const [collectStates, setCollectStates] = useState({});
-    // const toggleCollect = (id) => {
-    //     setCollectStates(prevState => ({
-    //         ...prevState,
-    //         [id]: !prevState[id]
-    //     }));
-    // };
+
 
     // 存入使用者喜歡和不喜歡的資料
     const updateLikeDislike = (wid, action) => {
@@ -331,7 +329,6 @@ export function CategoryProvider({ children }) {
         hateStates, setHateStates,
         dislikeCounts, setDislikeCounts,
 
-        posttoken, setposttoken,//存token的狀態
         datapage, setdatapage,// 判斷現在的資料是哪一頁要的
 
 
@@ -339,7 +336,7 @@ export function CategoryProvider({ children }) {
         fetchPostBook,// 關於搜索以及排序，判斷是否按讚
         toggleLove,//點讚的登入才能使用此功能
         toggleHate,//倒讚的登入才能使用此功能
-        taketoken,//點及獲取token
+        dataforabme,//將篩選的資料傳給abpost
         dontTaketoken,//將token變回空字串
         handleTabChange,//最新文章以及熱門文章的切換
         // 提示的開關
@@ -348,6 +345,7 @@ export function CategoryProvider({ children }) {
         // 提示文字的變化
         handletext,
         handletext1,
+        handletext3,
         closepage,//發文的關閉
         onpenpage,//呼叫po文頁面
 

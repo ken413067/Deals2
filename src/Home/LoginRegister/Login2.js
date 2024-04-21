@@ -1,8 +1,11 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { LoginFromSql } from './AixosLR';
-import { Link, NavLink } from 'react-router-dom';
+import React, { useRef, useEffect, useState, useContext } from 'react';
+import { Link, NavLink, Navigate, useNavigate } from 'react-router-dom';
 import Appbar, { themeforbutton } from '../Index/Appbar';
 import axios from "axios";
+import Cookies from 'js-cookie';
+
+
+import { CategoryContext } from '../Index/CategoryContext'
 
 
 
@@ -14,6 +17,7 @@ function Login2() {
     const rvdata = useRef();
     const dataemail = useRef();
     const datapassword = useRef();
+
     // 驗證碼
     const [captchaImageUrl, setCaptchaImageUrl] = useState('');
     useEffect(() => {
@@ -22,6 +26,7 @@ function Login2() {
     }, []);
     const captchaGetImageToPHP = () => {
         axios({
+
             url: "http://localhost/Prologin2/public/api/reload-captcha",
             method: "get",
         })
@@ -45,15 +50,43 @@ function Login2() {
                 console.error(error);
             });
     }
-    // 顏色
-    const theme = createTheme({
-        palette: {
-            primary: {
-                main: "#ffb74d",
-                dark: "#f57c00",
+    const { openHint, handletext3 } = useContext(CategoryContext)
+
+    // 登入
+
+    const gotopage1 = useNavigate()
+    function LoginFromSql() {
+
+
+        axios({
+            url: "http://localhost/Prologin2/public/api/login",
+            method: "post",
+            headers: {
+                'Content-Type': 'application/json',
             },
-        }
-    })
+            data: {
+                captcha: Cookies.get("captcha"),
+                email: dataemail.current.value,
+                password: datapassword.current.value,
+                rv: rvdata.current.value,
+            }
+        })
+            .then(function (response) {
+                openHint()
+                handletext3('登入成功 3秒後跳轉至首頁');
+                Cookies.set("token", response.data.authorization.token)
+                setTimeout(() => {
+                    gotopage1('/page1')
+                }, 3000);
+
+            })
+            .catch(function (error) {
+                openHint()
+                handletext3("登入失敗 請檢察欄位是否正確");
+            });
+    }
+
+    
 
     return (
         <>
@@ -75,11 +108,11 @@ function Login2() {
 
                             <Divider />
                             {/* <Typography variant='subtitle1' align='lift'>帳號</Typography> */}
-                            <TextField sx={{ my: 1, width: 1, }} variant="filled" inputRef={dataemail} type='email' label="信箱" />
+                            <TextField sx={{ my: 1, width: 1, }} variant="filled" inputRef={dataemail} type='email' label="*信箱" />
 
                             {/* <Typography variant='subtitle1' align='lift'>密碼</Typography> */}
-                            <TextField sx={{ my: 1, width: 1, }} variant="filled" inputRef={datapassword} type='password' label="密碼" />
-                            <TextField variant="filled" type="text" inputRef={rvdata} label="驗證碼" />
+                            <TextField sx={{ my: 1, width: 1, }} variant="filled" inputRef={datapassword} type='password' label="*密碼" />
+                            <TextField variant="filled" type="text" inputRef={rvdata} label="*驗證碼" />
                             <Stack spacing={2} direction='row'>
                                 <img src={captchaImageUrl} id='abc' />
                                 <Button onClick={captchaGetImageToPHP}>重新載入驗證碼</Button>
@@ -89,7 +122,7 @@ function Login2() {
                                 </NavLink>
                             </Typography>
                             <Grid container m={10} sx={{ justifyContent: 'center' }}>
-                                <Button variant='contained' sx={{ bgcolor: '#ffbcbc' }} onClick={() => LoginFromSql(dataemail, datapassword, rvdata)}>登入</Button>
+                                <Button variant='contained' onClick={() => LoginFromSql()}>登入</Button>
                             </Grid>
                         </Stack>
                     </Grid>

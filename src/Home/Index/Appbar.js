@@ -1,5 +1,5 @@
 import React, { useState, useRef, useContext, useEffect } from 'react'
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 // mui
 import { AppBar, Toolbar, IconButton, Button, Grid, Modal, InputAdornment, TextField, Typography, createTheme, ThemeProvider, CardMedia, Stack, Tooltip } from '@mui/material'
@@ -36,13 +36,13 @@ export const themeforbutton = createTheme({
         MuiButton: {
             styleOverrides: {
                 root: {
-                    borderRadius: '15px',
-                    color: 'black',
-                    backgroundColor: 'rgb(255,255,255)',
+                    borderRadius: '20px',
+                    color: '#040D12',
+                    backgroundColor: '#F8F4F5',
                     // border: '1px solid #9e9e9e',
                     '&:hover': {
-                        backgroundColor: 'rgba(0,0,0,0.2)',
-                        // color: 'white',
+                        backgroundColor: '#F5D46F',
+
                     },
                 },
             },
@@ -53,7 +53,8 @@ export const themeforbutton = createTheme({
                 root: {
                     // backgroundColor: 'rgba(0,0,0,0.05)',
                     '&:hover': {
-                        backgroundColor: 'rgba(0,0,0,0.2)',
+                        backgroundColor: '#F5D46F',
+
                     },
                 },
             },
@@ -71,6 +72,7 @@ export const themeforbutton = createTheme({
                     '&.Mui-focused': {
                         //   backgroundColor: 'rgba(0, 0, 0, 0.1)', // 焦點時的背景色
                     }
+
                 },
                 notchedOutline: {
                     // borderRadius: '20px', // 設置邊框圓角
@@ -79,10 +81,10 @@ export const themeforbutton = createTheme({
         },
     },
     palette: {
-        navlinkcolor: {
-            main: '#ffffff',
-            dark: '#212121',
-        },
+        // navlinkcolor: {
+        //     main: '#ffffff',
+        //     dark: '#212121',
+        // },
     }
 })
 
@@ -91,17 +93,18 @@ function Appbar() {
     const [inputvalue, setinputvalue] = useState('')
 
     const search = useRef()
-    const { setsearchref ,
+    const { setsearchref,
         posttoken, setposttoken,//倒讚的登入才能使用此功能
         taketoken,//點及獲取token
         closepage,//發文的關閉
-        pageopen,onpenpage,//po文頁面開關
-        
-        openforHint,handleCloseHint,//提示框的開關
+        pageopen, onpenpage,//po文頁面開關
+
+        openforHint, handleCloseHint,//提示框的開關
 
         dontTaketoken,//點擊首頁將值改為空字串提取全部文章
 
-        openHint,
+
+        openHint, handletext3//提示框
     } = useContext(CategoryContext)
     const searchToPHP = () => {
         setsearchref(search.current.value)
@@ -125,8 +128,15 @@ function Appbar() {
     }
     // 判斷token在不在
     const iftoken = Cookies.get("token")
-
-    
+    const history = useNavigate();
+    const checktoken = () => {
+        if (iftoken !== undefined) {
+            history('/aboutme')
+        } else {
+            openHint();
+            handletext3('請先登入')
+        }
+    }
 
 
     // appbar背景顏色
@@ -135,13 +145,13 @@ function Appbar() {
         <ThemeProvider theme={themeforbutton}>
             {/* 對話框 */}
             <Modal open={pageopen} onClose={closepage}>
-                <Edit  />
+                <Edit />
             </Modal>
             <Modal open={openforHint} onClose={handleCloseHint} sx={{ opacity: 0.5 }}>
                 <AnimationHint />
             </Modal>
             {/* 導覽列 */}
-            <AppBar sx={{ bgcolor: '#FFFFFF' }}>
+            <AppBar sx={{ bgcolor: '#F8F4F5', boxShadow: 0 }}>
                 <Toolbar>
 
 
@@ -150,7 +160,7 @@ function Appbar() {
                         <Grid item xs={2} >
                             {/* logo */}
                             <NavLink to='/page1'>
-                                <Button onClick={() => {dontTaketoken();refreshsearch()}}>
+                                <Button onClick={() => { dontTaketoken(); refreshsearch() }} sx={{ bgcolor: '#F8F4F5' }}>
                                     <Typography
                                         variant="h5"
                                         sx={{
@@ -190,7 +200,7 @@ function Appbar() {
 
                             {/* 登入 */}
                             <NavLink to='/login'>
-                                <Button sx={{ mx: 1 }}><Typography variant='subtitle2'>登入/註冊</Typography></Button>
+                                <Button sx={{ mx: 1, ':hover': { bgcolor: '#F5D46F' } }}><Typography variant='subtitle2'>登入/註冊</Typography></Button>
                             </NavLink>
                             {iftoken != undefined ?
                                 <Button onClick={logoutToPHP} sx={{ mx: 1 }}><Typography variant='subtitle2' >登出</Typography></Button>
@@ -213,11 +223,11 @@ function Appbar() {
                                 {/* 關於我 */}
 
                                 <Tooltip title='個人資料'>
-                                    <NavLink to='/aboutme'>
-                                        <IconButton >
-                                            <PersonIcon sx={{ color: 'rgba(0,0,0,0.8)' }} />
-                                        </IconButton>
-                                    </NavLink>
+                                    {/* <NavLink to='/aboutme'> */}
+                                    <IconButton onClick={checktoken}>
+                                        <PersonIcon sx={{ color: 'rgba(0,0,0,0.8)' }} />
+                                    </IconButton>
+                                    {/* </NavLink> */}
                                 </Tooltip >
                                 {/* 訂閱 */}
                                 {/* <Tooltip title='訂閱'>

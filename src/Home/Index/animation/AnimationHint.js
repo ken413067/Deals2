@@ -1,13 +1,13 @@
-import React, { useState, useEffect,useContext } from 'react'
-import { Box, Typography } from '@mui/material'
+import React, { useState, useEffect, useContext } from 'react'
+import { Box, Paper, Typography } from '@mui/material'
 import { CategoryContext } from '../CategoryContext'
 
 
 function AnimationHint() {
-    const { textdata} = useContext(CategoryContext)
+    const { textdata } = useContext(CategoryContext)
 
     // 透明度
-    const [opacity, setOpacity] = useState(0); 
+    const [opacity, setOpacity] = useState(0);
     useEffect(() => {
         // 淡入
         const fadeIn = setTimeout(() => {
@@ -17,7 +17,7 @@ function AnimationHint() {
         // 1秒後淡出
         const fadeOut = setTimeout(() => {
             setOpacity(0);
-        }, 1500);
+        }, 2000);
 
         return () => {
             clearTimeout(fadeIn);
@@ -32,19 +32,18 @@ function AnimationHint() {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         width: 200,
-        bgcolor: 'background.paper', 
+        bgcolor: '#fafafa',
         p: 4,
         textAlign: 'center',
         borderRadius: '5px',
         opacity: opacity, //透明度
-        transition: 'opacity 2s ease'//動畫
+        transition: 'opacity 3s ease'//動畫
     }
-   console.log(textdata)
     return (
         <>
-            <Box sx={style}>
-                <Typography sx={{ color: 'red' }}>{textdata}</Typography>
-            </Box>
+                <Paper sx={style}>
+                    <Typography >{textdata}</Typography>
+                </Paper>
         </>
     )
 }

@@ -1,9 +1,11 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { InserttoSql } from './AixosLR';
-import { NavLink, useNavigate } from 'react-router-dom';
+import React, { useRef, useEffect, useState, useContext } from 'react';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import Appbar, { themeforbutton } from '../Index/Appbar';
 import axios from "axios";
 import Cookies from 'js-cookie';
+
+import { CategoryContext } from '../Index/CategoryContext'
+
 
 
 import { Typography, Grid, TextField, CardMedia, Divider, Stack, Button } from '@mui/material';
@@ -13,6 +15,7 @@ function Register2() {
     const dataemail = useRef();
     const dataname = useRef();
     const datapassword = useRef();
+    const datapassword2 = useRef();
     const rvdata = useRef();
 
     const emailToPHP = (email) => {
@@ -40,7 +43,7 @@ function Register2() {
             headers: {
                 'Content-Type': 'application/json',
             }
-            
+
         })
             .then(function (response) {
                 const imgSrc = response.data.captcha;
@@ -68,25 +71,49 @@ function Register2() {
         if (verifiedEmail) {
             emailToPHP(verifiedEmail);
         }
-
         // 呼叫 API 以獲取驗證碼圖片
         captchaGetImageToPHP();
-
-
     }, []);
-    const navigate = useNavigate()//跳轉網址用的
-    // useEffect(() => {
-    //     // 取得token後5秒跳轉至login如沒有則不跳轉
-    //     const token = Cookies.get('token')
-    //     if (token) {
-    //         const timer = setTimeout(() => {
-    //             navigate('/login');
-    //         }, 5000);
 
-    //         // 清除定时器
-    //         return () => clearTimeout(timer);
-    //     }
-    // }, [navigate]);
+    //切換頁面
+    const gotologin = useNavigate()
+    const location = useLocation();//跳轉網址用的
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const email = queryParams.get('email');
+        if (email) {
+            gotologin('./login')
+        }
+    }, []);
+
+
+    const { openHint, handletext3 } = useContext(CategoryContext)
+    const InserttoSql = () => {
+        axios({
+            url: "http://localhost/Prologin2/public/api/register",
+            method: "post",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            data: {
+                email: dataemail.current.value,
+                name: dataname.current.value,
+                password: datapassword.current.value,
+                captcha: Cookies.get("captcha"),
+                rv: rvdata.current.value
+            }
+        })
+            .then(function (response) {
+                openHint()
+                handletext3("註冊成功 請檢查信件並完成郵箱驗證");
+            })
+            .catch(function (error) {
+                openHint()
+                handletext3("註冊失敗 請檢察欄位是否正確")
+
+            });
+    }
+
 
 
     return (
@@ -108,21 +135,17 @@ function Register2() {
                             <Typography variant='subtitle2'>有帳號了嗎?<NavLink to='/login'> 點我登入</NavLink> </Typography>
 
                             <Divider />
-                            {/* <Typography variant='subtitle1' align='lift'>帳號</Typography> */}
-                            <TextField sx={{ my: 1, width: 1 }} variant="filled" name='email' inputRef={dataemail} type='email' label="信箱" />
-
-                            {/* <Typography variant='subtitle1' align='lift'>使用者名稱</Typography> */}
+                            <TextField sx={{ my: 1, width: 1 }} variant="filled" name='email' inputRef={dataemail} type='email' label="*信箱" />
                             <TextField sx={{ my: 1, width: 1 }} variant="filled" name='name' inputRef={dataname} type='text' label="名稱" />
-
-                            {/* <Typography variant='subtitle1' align='lift'>密碼</Typography> */}
-                            <TextField sx={{ my: 1, width: 1 }} variant="filled" name='password' inputRef={datapassword} type='password' label="密碼" />
-                            <TextField variant="filled" type="text" inputRef={rvdata} label="驗證碼" />
+                            <TextField sx={{ my: 1, width: 1 }} variant="filled" name='password' inputRef={datapassword} type='password' label="*密碼" />
+                            <TextField sx={{ my: 1, width: 1, color: 'red' }} variant="filled" name='password' inputRef={datapassword2} type='password' label="*確認密碼" />
+                            <TextField variant="filled" type="text" inputRef={rvdata} label="*驗證碼" />
                             <Stack spacing={2} direction='row'>
                                 <img src={captchaImageUrl} id='abc' />
                                 <Button onClick={captchaGetImageToPHP}>重新載入驗證碼</Button>
                             </Stack>
                             <Grid container m={10} sx={{ justifyContent: 'center' }}>
-                                <Button variant='contained' sx={{ bgcolor: '#ffbcbc' }} onClick={() => InserttoSql(dataemail, dataname, datapassword, rvdata)}>註冊</Button>
+                                <Button variant='contained' onClick={() => InserttoSql()}>註冊</Button>
                             </Grid>
                         </Stack>
                     </Grid>

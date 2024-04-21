@@ -11,7 +11,7 @@ export function TakePostProvider({ children }) {
   // News2中點擊圖片後將wid傳遞到newspage
   const [pagedata, setpagedata] = useState(null)
   // 獲取收藏文章資料
-  const [collect, setcollect] = useState()
+  const [collect, setcollect] = useState([])
 
   // 專屬訂閱的狀態儲存
   const [subscribedata, setsubscribedata] = useState(false)
@@ -25,8 +25,9 @@ export function TakePostProvider({ children }) {
   // 以下是內嵌式文章
   // 李安的獲取收藏
   const collectforpost = () => {
+    console.log(pagedata)
     axios({
-      url: `http://localhost/Prologin2/public/api/articles/FavoriteW`,
+      url: `http://localhost/Prologin2/public/api/articles/${pagedata}/checkFavorite`,
       method: 'get',
       params: {
         token: token
@@ -34,7 +35,8 @@ export function TakePostProvider({ children }) {
     })
       .then(function (response) {
         setcollect(response.data)
-        // console.log(response.data)//陣列
+
+        console.log(response.data)
       })
       .catch(function (error) {
         console.log("收藏文章獲取失敗", error);
@@ -53,11 +55,11 @@ export function TakePostProvider({ children }) {
         }
       })
         .then(function (response) {
-          collectforpost()
           console.log(response.data)
         })
         .catch(function (error) {
           console.log("收藏文章失敗", error);
+
         });
     }
   };

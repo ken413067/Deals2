@@ -1,7 +1,8 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from "axios";
 import Cookies from 'js-cookie';
-import AboutMaterial from './AbMeee'
+import { CategoryContext } from '../Index/CategoryContext'
+
 
 // 創建上文
 export const AboutmeContext = createContext();
@@ -11,30 +12,29 @@ export const AboutmeProvider = ({ children }) => {
     // 關於我全部的資料
     const [data, setData] = useState(null);
     // 文章資料
-    const [newspagedata,setnewspagedata] = useState(null)
+    const [newspagedata, setnewspagedata] = useState(null)
     // 文章的WID
     const [selectedArticle, setSelectedArticle] = useState(null)
-    
+
     // 網頁加載完時渲染關於我及部分文章資料
-    useEffect(() => {
-        axios({
-            url: 'http://localhost/Prologin2/public/api/aboutme',
-            method: 'post',
-            data: {
-                token: Cookies.get('token'),
-            },
-        })
-            .then(function (response) {
-                const aboutdata = Object.values(response.data)
-                setData(aboutdata[2][0].PersonalProfile);
-                // console.log(aboutdata)
+    // 接收關於我的資料
+    const [abmedata, setabmedata] = useState()
+    const dataformee = () => {
+        const url = 'http://localhost/Prologin2/public/api/aboutme'
+        const token = Cookies.get('token')
+        axios.post(url, { token: token })
+            .then((response) => {
+                const data1 = Object.values(response.data)
+                setabmedata(data1)
+                // console.log(data1[3][0].UID)
             })
-            .catch(function (error) {
-                console.log('失敗');
+            .catch((error) => {
+                console.error('Error:', error);  // 错误处理
             });
-    }, []);
+    }
+
     // 網頁加載完時渲染關於我留言資料
-    const [aboutmemsg,setaboutmemsg] = useState(null)
+    const [aboutmemsg, setaboutmemsg] = useState(null)
     useEffect(() => {
         axios({
             url: 'http://localhost/Prologin2/public/api/post',
@@ -46,29 +46,28 @@ export const AboutmeProvider = ({ children }) => {
             .then(function (response) {
                 const aboutpostmsg = Object.values(response.data)
                 setaboutmemsg(aboutpostmsg);
-                
+
             })
             .catch(function (error) {
                 console.log('失敗');
             });
     }, []);
-                    // console.log(aboutmemsg)
+    // console.log(aboutmemsg)
 
     // 把所有的狀態都塞進去
     const allvalue = {
-        data, 
+        data,
         setData,
-        selectedArticle, 
+        selectedArticle,
         setSelectedArticle,
         newspagedata,
         setnewspagedata,
         aboutmemsg,
-        setaboutmemsg
+        setaboutmemsg,
+        abmedata, setabmedata,
+        dataformee
     }
 
-
-
-    // console.log(aboutmemsg)
     //   提供上文資料
     return (
         <AboutmeContext.Provider value={allvalue}>
@@ -77,43 +76,3 @@ export const AboutmeProvider = ({ children }) => {
     );
 };
 
-export function Abupdate (sqlforname,sqlforpassword,sqlforme,image){
-    const toname = sqlforname.current.value;
-    // const toemail = sqlforemail.current.value;
-    const topassword = sqlforpassword.current.value;
-    const toPersonalProfile = sqlforme.current.value;
-    // console.log(topassword)
-    axios({
-        url: 'http://localhost/Prologin2/public/api/update',
-        method: 'post',
-        data: {
-            name:toname,
-            // email:toemail,
-            password:topassword,
-            PersonalProfile:toPersonalProfile,
-            // image:image,
-            token: Cookies.get('token'),
-        },
-    })
-        .then(function (response) {
-            console.log("傳送成功")
-        })
-        .catch(function (error) {
-            console.log('傳送失敗');
-        });
-    // axios({
-    //     url: 'http://localhost/Prologin2/public/api/personalprofile',
-    //     method: 'post',
-    //     data: {
-    //         token: Cookies.get('token'),
-    //         PersonalProfile:toPersonalProfile,
-    //     },
-    // })
-    //     .then(function (response) {
-    //         console.log("傳送成功1")
-    //     })
-    //     .catch(function (error) {
-    //         console.log('傳送失敗1');
-    //         console.log(toPersonalProfile);
-    //     });
-}

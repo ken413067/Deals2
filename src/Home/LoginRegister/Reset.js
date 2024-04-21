@@ -1,9 +1,11 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect,useContext } from 'react'
 import Appbar,{themeforbutton} from '../Index/Appbar';
 import { NavLink } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 
 import axios from 'axios';
+import { CategoryContext } from '../Index/CategoryContext'
+
 
 import { ThemeProvider, createTheme, Typography, Grid, TextField, CardMedia, Divider, Stack, Button } from '@mui/material';
 
@@ -14,6 +16,7 @@ function Reset() {
     const Checkpassword = useRef()
     let ValueToken
     let ValueEmail
+    const { openHint, handletext3 } = useContext(CategoryContext)
 
     const navigate = useNavigate(); // 正確使用useNavigate
     useEffect(() => {
@@ -29,8 +32,6 @@ function Reset() {
             url: "http://localhost/Prologin2/public/api/resetpassword",
             method: "post",
             data: {
-                // token: Resettoken.current.value,
-                // email: Resetemail.current.value,
                 token: ValueToken,
                 email: ValueEmail,
                 password: Resetpassword.current.value,
@@ -38,11 +39,13 @@ function Reset() {
             }
         })
             .then(function (response) {
-                console.log(response.data);
+                openHint()
+                handletext3('更改失敗 請檢察欄位');
 
             })
             .catch(function (error) {
-                console.error(error);
+                openHint()
+                handletext3('更改成功');
             });
     }
     return (
@@ -64,10 +67,10 @@ function Reset() {
                                 <NavLink to='/login'> 點我登入</NavLink>
                             </Typography>
                             <Divider />
-                            <TextField sx={{ my: 1, width: 1, }} variant="filled" type='password' label="新密碼" inputRef={Resetpassword} />
-                            <TextField sx={{ my: 1, width: 1, }} variant="filled" type='password' label="確認密碼" inputRef={Checkpassword} />
+                            <TextField sx={{ my: 1, width: 1, }} variant="filled" type='password' label="*新密碼" inputRef={Resetpassword} />
+                            <TextField sx={{ my: 1, width: 1, }} variant="filled" type='password' label="*確認密碼" inputRef={Checkpassword} />
                             <Grid container m={10} sx={{ justifyContent: 'end' }}>
-                                <Button onClick={ResetToPHP} sx={{bgcolor:'#ffbcbc'}} variant='contained'>重設密碼</Button>
+                                <Button onClick={ResetToPHP}  variant='contained'>重設密碼</Button>
                             </Grid>
                         </Stack>
                     </Grid>
