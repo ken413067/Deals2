@@ -46,7 +46,6 @@ export const Material = () => {
   const dataforimage = abmedata ? abmedata[2][0].image : "";
 
   const texterror1 = Cookies.get('token')
-  console.log(abmedata)
   // 網頁載入時執行以下函數
   // 圖片的狀態
   const [image, setImage] = useState('../ken1.jpg');

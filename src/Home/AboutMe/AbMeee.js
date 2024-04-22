@@ -54,7 +54,7 @@ export function AboutMaterial() {
         if (img.current && img.current.files[0]) {
             formData.append('image', img.current.files[0]);
         }
-
+        console.log(img.current.files[0])
         axios({
             url: 'http://localhost/Prologin2/public/api/update',
             method: 'post',

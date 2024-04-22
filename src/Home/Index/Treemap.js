@@ -89,7 +89,7 @@ function Treemap() {
         // 新增文字大小設定
         dataLabels: {
             style: {
-                fontSize: '30px'
+                fontSize: '20px'
             }
         }
     };

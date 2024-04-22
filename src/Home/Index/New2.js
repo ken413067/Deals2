@@ -48,7 +48,7 @@ function New2() {
     } = useContext(CategoryContext);
     const search = searchref
 
-
+    console.log(postbook)
     // 從第二個爸爸拿到資料
     const { setpagedata,//切換首頁分類標籤
         handleWidUpdate, collect, collectforpost, //獲取收藏會用到(是一個陣列)
@@ -179,9 +179,9 @@ function New2() {
                         {/* 折扣 */}
                         <Button disabled sx={{ position: 'absolute', top: 0, left: 0, bgcolor: checkDiscountStatus(bookdata.ConcessionStart, bookdata.ConcessionEnd) === '優惠未開始' || checkDiscountStatus(bookdata.ConcessionStart, bookdata.ConcessionEnd) === '優惠已結束' ? '#F5D46F' : '#D32F2F' }}>
                             <Typography sx={{
-                                        color: checkDiscountStatus(bookdata.ConcessionStart, bookdata.ConcessionEnd) === '優惠未開始' || checkDiscountStatus(bookdata.ConcessionStart, bookdata.ConcessionEnd) === '優惠已結束' ? '#757575' : '#FFFFFF'
-                                    }}>
-                                        {checkDiscountStatus(bookdata.ConcessionStart, bookdata.ConcessionEnd)}</Typography></Button>
+                                color: checkDiscountStatus(bookdata.ConcessionStart, bookdata.ConcessionEnd) === '優惠未開始' || checkDiscountStatus(bookdata.ConcessionStart, bookdata.ConcessionEnd) === '優惠已結束' ? '#757575' : '#FFFFFF'
+                            }}>
+                                {checkDiscountStatus(bookdata.ConcessionStart, bookdata.ConcessionEnd)}</Typography></Button>
                         {token ? <IconButton onClick={() => { deletepost(bookdata.WID) }} sx={{ position: 'absolute', top: 0, right: 0, }}><CloseOutlinedIcon /></IconButton> : ''}
                         {/* 內容 */}
                         <CardContent sx={{ height: 150 }}>
@@ -227,7 +227,6 @@ function New2() {
                         </CardActions>
                         <Stack direction='row' px={1} spacing={1} sx={{ alignItems: 'center', justifyContent: 'center' }}>
                             <Avatar src={bookdata.image ? `data:image/jpeg;base64,${bookdata.image}` : '../ken1.jpg'} sx={{ border: 1 }} />
-
                             <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
                                 發文日期 : {formatDate(bookdata.PostTime)}
                             </Typography>
