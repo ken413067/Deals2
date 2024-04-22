@@ -85,6 +85,12 @@ function Treemap() {
                 distributed: true,
                 enableShades: false
             }
+        },
+        // 新增文字大小設定
+        dataLabels: {
+            style: {
+                fontSize: '30px'
+            }
         }
     };
     return (

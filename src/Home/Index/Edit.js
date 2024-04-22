@@ -140,6 +140,10 @@ function Edit() {
                         <MenuItem value={'美妝'}>美妝</MenuItem>
                         <MenuItem value={'旅遊'}>旅遊</MenuItem>
                         <MenuItem value={'遊戲'}>遊戲</MenuItem>
+                        <MenuItem value={'3C'}>3C</MenuItem>
+                        <MenuItem value={'信用卡'}>信用卡</MenuItem>
+                      <MenuItem value={'家具'}>家具</MenuItem>
+                      <MenuItem value={'服飾'}>服飾</MenuItem>
                       </Select>
                     </FormControl>
                   </Stack>

@@ -62,7 +62,7 @@ function Reset() {
                     </Grid>
                     <Grid item xs={12} md={6} p={8} sx={{ bgcolor: 'white', borderRadius: 1, boxShadow: 10 }}>
                         <Stack spacing={2}>
-                            <Typography variant='h5'>忘記密碼</Typography>
+                            <Typography variant='h5'>重設密碼</Typography>
                             <Typography variant='subtitle2'>想起帳號了嗎?
                                 <NavLink to='/login'> 點我登入</NavLink>
                             </Typography>

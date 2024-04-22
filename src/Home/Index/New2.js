@@ -55,6 +55,23 @@ function New2() {
         checkcollectdata, setcheckcollectdata,  // 檢查用戶是否有對文章按過收藏
     } = useContext(TakePostcontext)
 
+    //判斷優惠時間
+    const checkDiscountStatus = (concessionStart, concessionEnd) => {
+        const currentDate = new Date();
+
+        const start = new Date(concessionStart);
+        const end = new Date(concessionEnd);
+
+        if (currentDate >= start && currentDate <= end) {
+            return "優惠中";
+        } else if (currentDate < start) {
+            return "優惠未開始";
+        } else {
+            return "優惠已結束";
+        }
+    };
+
+
     // const { abmedata } = useContext(AboutmeContext)
     // const myuid = abmedata ? abmedata[3][0].UID : ''
     // console.log(myuid)
@@ -160,7 +177,11 @@ function New2() {
                             </Button>
                         </Box>
                         {/* 折扣 */}
-                        <Button disabled sx={{ position: 'absolute', top: 0, left: 0, bgcolor: '#d32f2f' }}><Typography sx={{ color: 'white' }}>{bookdata.InProgress ? bookdata.InProgress : 0}%OFF</Typography></Button>
+                        <Button disabled sx={{ position: 'absolute', top: 0, left: 0, bgcolor: checkDiscountStatus(bookdata.ConcessionStart, bookdata.ConcessionEnd) === '優惠未開始' || checkDiscountStatus(bookdata.ConcessionStart, bookdata.ConcessionEnd) === '優惠已結束' ? '#F5D46F' : '#D32F2F' }}>
+                            <Typography sx={{
+                                        color: checkDiscountStatus(bookdata.ConcessionStart, bookdata.ConcessionEnd) === '優惠未開始' || checkDiscountStatus(bookdata.ConcessionStart, bookdata.ConcessionEnd) === '優惠已結束' ? '#757575' : '#FFFFFF'
+                                    }}>
+                                        {checkDiscountStatus(bookdata.ConcessionStart, bookdata.ConcessionEnd)}</Typography></Button>
                         {token ? <IconButton onClick={() => { deletepost(bookdata.WID) }} sx={{ position: 'absolute', top: 0, right: 0, }}><CloseOutlinedIcon /></IconButton> : ''}
                         {/* 內容 */}
                         <CardContent sx={{ height: 150 }}>

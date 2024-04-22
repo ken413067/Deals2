@@ -9,6 +9,8 @@ import { MdOutlineAlignHorizontalLeft } from "react-icons/md";
 import { MdFastfood } from "react-icons/md";
 import { BsFillCreditCardFill } from "react-icons/bs";
 import { MdFace4 } from "react-icons/md";
+import { GiSofa } from "react-icons/gi";
+import { GiClothes } from "react-icons/gi";
 
 
 // const theme = createTheme({
@@ -119,6 +121,36 @@ function Listgogo() {
                                     <Grid item sm={1}><BsFillCreditCardFill size={25} /></Grid>
                                     <Grid item sm={1}></Grid>
                                     <Grid item sm={6}><Typography>信用卡</Typography></Grid>
+                                </Grid>
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding sx={{
+                            transition: 'transform 0.3s ease',  // 動畫
+                            '&:hover': { transform: 'translateY(-10px)', bgcolor: '#F5D46F', color: 'white' },// 向上移動
+                            bgcolor: category === '家具' ? '#F5D46F' : '', color: category === '家具' ? 'white' : ''
+
+                        }}>
+                            <ListItemButton onClick={() => handleCategoryClick('家具')}>
+                                <Grid container sx={{ alignItems: 'center' }}>
+                                    <Grid item sm={4} sx={{ display: { xs: 'none', sm: 'block' } }}></Grid>
+                                    <Grid item sm={1}><GiSofa size={25}/></Grid>
+                                    <Grid item sm={1}></Grid>
+                                    <Grid item sm={6}><Typography>家具</Typography></Grid>
+                                </Grid>
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding sx={{
+                            transition: 'transform 0.3s ease',  // 動畫
+                            '&:hover': { transform: 'translateY(-10px)', bgcolor: '#F5D46F', color: 'white' },// 向上移動
+                            bgcolor: category === '服飾' ? '#F5D46F' : '', color: category === '服飾' ? 'white' : ''
+
+                        }}>
+                            <ListItemButton onClick={() => handleCategoryClick('服飾')}>
+                                <Grid container sx={{ alignItems: 'center' }}>
+                                    <Grid item sm={4} sx={{ display: { xs: 'none', sm: 'block' } }}></Grid>
+                                    <Grid item sm={1}><GiClothes size={25} /></Grid>
+                                    <Grid item sm={1}></Grid>
+                                    <Grid item sm={6}><Typography>服飾</Typography></Grid>
                                 </Grid>
                             </ListItemButton>
                         </ListItem>

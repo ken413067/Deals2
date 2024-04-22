@@ -53,7 +53,7 @@ function Forget() {
                             <Divider />
                             <TextField sx={{ my: 1, width: 1, }} variant="filled" type='email' label="*信箱" inputRef={Forgetemail} />
                             <Grid container m={10} sx={{ justifyContent: 'end' }}>
-                                <Button variant='contained' onClick={ForgotToPHP} >忘記密碼</Button>
+                                <Button variant='contained' onClick={ForgotToPHP} >寄送驗證信</Button>
                             </Grid>
                         </Stack>
                     </Grid>
